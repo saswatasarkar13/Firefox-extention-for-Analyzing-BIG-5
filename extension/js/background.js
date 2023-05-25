@@ -1,44 +1,28 @@
-// Listener for messages from content script
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log({ message, sender, sendResponse });
-  if (message.action === 'copyTweetText') {
-    const tweetText = message.tweetText;
-    const body = { text: tweetText };
-    // Send the selectedText to the API
-    fetch('http://127.0.0.1:8000/api', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the API response data
-        console.log('API response:', data);
-        // TODO: Perform necessary processing on the result if needed
-        // Pass the result to the new tab
-        browser.tabs
-          .create({
-            url: browser.extension.getURL('newtab.html'),
-            active: true
-          })
-          .then((createdTab) => {
-            // Send the result to the new tab
-            browser.tabs.sendMessage(createdTab.id, {
-              action: 'displayResult',
-              result: data.data
-            });
-          });
-      })
-      .catch((error) => {
-        // Handle API errors
-        console.error('API Error:', error);
-      });
+const BASE_URL = 'http://127.0.0.1:8000';
 
-    // TODO: Perform necessary processing and send the result back to the content script
-    sendResponse({ success: true });
+// Listener for messages from content script
+browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  console.log({ message, sender, sendResponse });
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  };
+
+  // Send the selectedText to the API
+  const res = await fetch(`${BASE_URL}/api`, options);
+  if (!res.ok) {
+    sendResponse({ success: false, data: null });
+    return;
   }
+
+  const response = await res.json();
+
+  // TODO: Perform necessary processing and send the result back to the content script
+  sendResponse({ success: true, data: response?.data });
 });
 
 browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {

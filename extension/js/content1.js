@@ -2,47 +2,29 @@ const USER_TRAIT_BOX_ID = 'big5-user-traits-box';
 
 var big5TraitsMap = new Map();
 
-const BASE_URL = 'http://127.0.0.1:8000';
-
 const tweetSender = async (tweetText) => {
   const body = { text: tweetText };
 
   const sending = browser.runtime.sendMessage(body);
   sending.then(
-    function handleResponse(r) {
-      console.log(r);
+    function handleResponse(response) {
+      console.log({ response });
+
+      if (response?.success && response?.data) {
+        const key = response.data;
+        if (big5TraitsMap.has(key)) {
+          big5TraitsMap.set(key, big5TraitsMap.get(key) + 1);
+        } else {
+          big5TraitsMap.set(key, 1);
+        }
+
+        createTable();
+      }
     },
     function handleError(e) {
       console.log(e);
     }
   );
-  return;
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  };
-  // Send the selectedText to the API
-  const res = await fetch(`${BASE_URL}/api`, options);
-  if (!res.ok) {
-    return;
-  }
-
-  const response = await res.json();
-
-  if (response?.data) {
-    const key = response.data;
-    if (big5TraitsMap.has(key)) {
-      big5TraitsMap.set(key, big5TraitsMap.get(key) + 1);
-    } else {
-      big5TraitsMap.set(key, 1);
-    }
-
-    createTable();
-  }
 };
 
 const tableExists = () => {

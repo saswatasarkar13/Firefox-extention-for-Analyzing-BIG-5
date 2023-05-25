@@ -2,8 +2,7 @@ var big5TraitsMap = new Map();
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
-const tweetSender = async () => {
-  const tweetText = message.tweetText;
+const tweetSender = async (tweetText) => {
   const body = { text: tweetText };
   const options = {
     method: 'POST',
@@ -194,7 +193,26 @@ const createTable = () => {
   userBox.appendChild(table);
 };
 
+function searchTweets() {
+  const tweets = document.querySelectorAll('[data-testid="tweetText"]');
+
+  tweets.forEach((tweet) => {
+    if (tweet.dataset.is_visited) {
+      return;
+    }
+
+    const tweetText = tweet.innerText;
+    console.log({ tweetText });
+    tweet.dataset.is_visited = true;
+
+    tweetSender(tweetText);
+  });
+}
+
 //
+window.addEventListener('scroll', searchTweets);
+
 window.addEventListener('DOMContentLoaded', () => {
   console.log("Hello I'm loaded!!!");
+  searchTweets();
 });

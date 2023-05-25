@@ -6,6 +6,18 @@ const BASE_URL = 'http://127.0.0.1:8000';
 
 const tweetSender = async (tweetText) => {
   const body = { text: tweetText };
+
+  const sending = browser.runtime.sendMessage(body);
+  sending.then(
+    function handleResponse(r) {
+      console.log(r);
+    },
+    function handleError(e) {
+      console.log(e);
+    }
+  );
+  return;
+
   const options = {
     method: 'POST',
     headers: {
@@ -95,7 +107,7 @@ const createTable = () => {
 
 function searchTweets() {
   console.log('Searching tweets...');
-  
+
   const tweets = document.querySelectorAll('[data-testid="tweetText"]');
   console.log({ tweets });
   tweets.forEach((tweet) => {

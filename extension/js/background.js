@@ -12,17 +12,19 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     body: JSON.stringify(body)
   };
 
-  // Send the selectedText to the API
-  const res = await fetch(`${BASE_URL}/api`, options);
-  if (!res.ok) {
-    sendResponse({ success: false, data: null });
-    return;
-  }
+  new Promise(async (resolve) => {
+    // Send the selectedText to the API
+    const res = await fetch(`${BASE_URL}/api`, options);
+    if (!res.ok) {
+      resolve({ success: false, data: null });
+      return;
+    }
 
-  const response = await res.json();
+    const response = await res.json();
 
-  // TODO: Perform necessary processing and send the result back to the content script
-  sendResponse({ success: true, data: response?.data });
+    // TODO: Perform necessary processing and send the result back to the content script
+    resolve({ success: true, data: response?.data });
+  });
 });
 
 browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {

@@ -17,6 +17,7 @@ const tweetSender = async (tweetText) => {
         } else {
           big5TraitsMap.set(key, 1);
         }
+        console.log({ big5TraitsMap });
 
         createTable();
       }

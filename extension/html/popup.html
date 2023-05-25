@@ -25,11 +25,4 @@
   <h2>Openness</h2>
   <p>*Analysis based on the selected text.</p>
 </body>
-<script>
-  browser.runtime.onMessage.addListener((request) => {
-    console.log("Message from the background script:");
-    console.log(request);
-    return Promise.resolve({ response: "Hi from content script" });
-  });
-  </script>
 </html>

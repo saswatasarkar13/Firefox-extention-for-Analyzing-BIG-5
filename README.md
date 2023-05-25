@@ -1,1 +1,3 @@
-# big5
+# big5 (DO NO DO ANYTHING WITH THIS AT HOME!)
+
+It is incomplete...

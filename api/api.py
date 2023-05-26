@@ -8,8 +8,7 @@ traits = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', '
 
 
 class Big(BaseModel):
-    texts: list[str]
-
+    text: str
 
 app = FastAPI()
 
@@ -26,13 +25,13 @@ async def root(
     body: Big
 ):
     body = body.dict()
-    # print(body)
+    print(body)
     # Use the preprocess_and_predict function from predictor.py
-    # result = preprocess_and_predict(body["texts"][0])
-    # print(result)
-    result = []
-    for i in body["texts"]:
-        result.append(preprocess_and_predict(i))
+    result = preprocess_and_predict(body["text"])
+    print(result)
+    # result = []
+    # for i in body["texts"]:
+    #     result.append(preprocess_and_predict(i))
     # result = "Predict"
 
     return {"data": result}

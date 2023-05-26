@@ -7,7 +7,7 @@ header {
 #big5-user-traits-box {
   padding: 1rem;
   margin: 1rem 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 12px;
   box-shadow: rgba(200, 200, 193, 0.25) 0px 6px 12px -2px,
     rgba(244, 244, 244, 0.3) 0px 3px 7px -3px;
@@ -73,15 +73,15 @@ header {
 }
 
 #big5-user-traits-table tr:nth-child(2) > td:first-child {
-  color: #f8d359;
+  color: #7d6106;
 }
 
 #big5-user-traits-table tr:nth-child(3) > td:first-child {
-  color: #f78a86;
+  color: #cf4f4a;
 }
 
 #big5-user-traits-table tr:nth-child(4) > td:first-child {
-  color: #edddc2;
+  color: #5c5447;
 }
 
 #big5-user-traits-table tr:nth-child(5) > td:first-child {

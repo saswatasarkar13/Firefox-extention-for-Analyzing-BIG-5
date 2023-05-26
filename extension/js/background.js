@@ -48,7 +48,7 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener(function (info, tab) {
   if (info.menuItemId === 'bigFiveContextMenu') {
     const selectedText = info.selectionText;
-    const body = { texts: [selectedText] };
+    const body = { text: selectedText };
 
     // Send the selectedText to the API
     fetch(API_URL, {
@@ -62,10 +62,7 @@ browser.contextMenus.onClicked.addListener(function (info, tab) {
       .then((data) => {
         // Handle the API response data
         console.log('API response:', data);
-        browser.tabs.sendMessage(tab.id, {
-          type: 'selected-text-popup',
-          data: data.data[0]
-        });
+        browser.tabs.sendMessage(tab.id, { type: 'selected-text-popup', data: data.data });
       })
       .catch((error) => {
         // Handle API errors

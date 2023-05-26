@@ -18,6 +18,12 @@
       "js": ["lib/apex-charts/apexcharts.min.js", "js/content.js"],
       "css": ["css/styles.css"],
       "run_at": "document_end"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["lib/apex-charts/apexcharts.min.js", "js/popup.js"],
+      "css": ["css/styles.css"],
+      "run_at": "document_end"
     }
   ],
   "browser_action": {

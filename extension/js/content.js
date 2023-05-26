@@ -12,6 +12,7 @@ const TRAITS = [
 const LOGO_LINK = 'assets/icon.png';
 const RESPONSE_THRESHOLD = 5;
 const URL_REGEX_PATTERN = /^https:\/\/twitter\.com\/[^\/\?]+$/;
+const COLORS = ['#f8d359', '#f78a86', '#edddc2', '#71cae5', '#31dcb2'];
 
 var big5TraitsMap = new Map();
 var totalReceivedResponses = 0;
@@ -197,8 +198,7 @@ function renderChart() {
     legend: {
       show: false
     },
-    colors: ['#f8d359', '#f78a86','#edddc2','#71cae5','#31dcb2']
-
+    colors: COLORS
   };
 
   const ele = document.querySelector(
@@ -251,7 +251,7 @@ function searchTweets() {
 window.addEventListener('load', () => {
   console.log("Hello I'm loaded!!!");
 
-  if(!URL_REGEX_PATTERN.test(window.location)) return;
+  if (!URL_REGEX_PATTERN.test(window.location)) return;
 
   // Entry point
   window.addEventListener('scroll', searchTweets);

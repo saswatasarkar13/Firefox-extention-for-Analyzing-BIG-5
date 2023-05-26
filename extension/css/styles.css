@@ -15,6 +15,10 @@ header {
   z-index: 99;
 }
 
+#big5-user-traits-box:not(.float_right) {
+  font-size: 0.8em;
+}
+
 #big5-user-traits-box.float_right {
   position: fixed;
   left: 10px;
@@ -63,6 +67,30 @@ header {
 
 #big5-user-traits-table td {
   padding: 0.5rem 2rem;
+}
+
+#big5-user-traits-table tr td:first-child {
+  font-weight: bold;
+}
+
+#big5-user-traits-table tr:nth-child(2) > td:first-child {
+  color: #f8d359;
+}
+
+#big5-user-traits-table tr:nth-child(3) > td:first-child {
+  color: #f78a86;
+}
+
+#big5-user-traits-table tr:nth-child(4) > td:first-child {
+  color: #edddc2;
+}
+
+#big5-user-traits-table tr:nth-child(5) > td:first-child {
+  color: #71cae5;
+}
+
+#big5-user-traits-table tr:nth-child(6) > td:first-child {
+  color: #31dcb2;
 }
 
 #big5-user-traits-chart {

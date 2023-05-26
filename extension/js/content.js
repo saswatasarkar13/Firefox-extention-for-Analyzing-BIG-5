@@ -10,12 +10,14 @@ const TRAITS = [
   'Openness'
 ];
 const LOGO_LINK = 'assets/icon.png';
-const RESPONSE_THRESHOLD = 5;
+const RESPONSE_THRESHOLD = 2;
+const MAX_REQUESTS = 10;
 const URL_REGEX_PATTERN = /^https:\/\/twitter\.com\/[^\/\?]+$/;
 const COLORS = ['#f8d359', '#f78a86', '#edddc2', '#71cae5', '#31dcb2'];
 
 var big5TraitsMap = new Map();
 var totalReceivedResponses = 0;
+var totalRequest = 0;
 var userNameObserver = null;
 var chart = null;
 
@@ -160,8 +162,16 @@ const createTable = () => {
     content.appendChild(table);
     content.appendChild(chart);
     tableWrapper.appendChild(content);
+    const tnc = document.createElement("small");
+    tnc.setAttribute('id', "tnc");
+    tnc.innerText = `*Analysis based on the last ${totalReceivedResponses} tweets of the user.`
+    tableWrapper.appendChild(tnc);
     userBox.appendChild(tableWrapper);
   }
+  else {
+    document.getElementById("tnc").innerText = `*Analysis based on the last ${totalReceivedResponses} tweets of the user.`
+  }
+
 
   renderChart();
 
@@ -218,20 +228,31 @@ function renderChart() {
 }
 
 function searchTweets() {
+
   // console.log('Searching tweets...');
   const tweets = document.querySelectorAll('[data-testid="tweetText"]');
   // console.log({ tweets });
-  tweets.forEach((tweet) => {
-    if (tweet.dataset.is_visited) {
-      return;
+  //tweets.forEach((tweet) => {
+  if (totalRequest < MAX_REQUESTS) {
+    for (let tweet of tweets) {
+      if (tweet.dataset.is_visited) {
+        return;
+      }
+
+
+      const tweetText = tweet.innerText;
+      // console.log({ tweetText });
+      tweet.dataset.is_visited = true;
+
+      tweetSender(tweetText);
+      totalRequest += 1;
+
+      if (totalRequest >= MAX_REQUESTS) {
+        break;
+      }
     }
 
-    const tweetText = tweet.innerText;
-    // console.log({ tweetText });
-    tweet.dataset.is_visited = true;
-
-    tweetSender(tweetText);
-  });
+  }
 
   const doc = document.documentElement;
   const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);

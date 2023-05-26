@@ -16,7 +16,7 @@ header {
 }
 
 #big5-user-traits-box:not(.float_right) {
-  font-size: 0.8em;
+  font-size: 0.7em;
 }
 
 #big5-user-traits-box.float_right {
@@ -61,12 +61,12 @@ header {
 }
 
 #big5-user-traits-table th {
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
   font-weight: bold;
 }
 
 #big5-user-traits-table td {
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
 }
 
 #big5-user-traits-table tr td:first-child {
@@ -111,6 +111,13 @@ header {
   font-size: medium;
   z-index: 999;
 }
+
+#big5-user-traits-box small{
+  color: gray;
+}
+
+
+
 
 /* #big5-user-traits-box.float_right #big5-user-traits-chart > button {
   display: block;

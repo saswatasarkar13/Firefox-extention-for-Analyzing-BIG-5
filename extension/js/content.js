@@ -10,16 +10,15 @@ const TRAITS = [
   'Openness'
 ];
 const LOGO_LINK = 'assets/icon.png';
-const RESPONSE_THRESHOLD = 2;
-const MAX_REQUESTS = 10;
+const REQUEST_THRESHOLD = 10;
 const URL_REGEX_PATTERN = /^https:\/\/twitter\.com\/[^\/\?]+$/;
 const COLORS = ['#f8d359', '#f78a86', '#edddc2', '#71cae5', '#31dcb2'];
 
 var big5TraitsMap = new Map();
+var userTweets = [];
 var totalReceivedResponses = 0;
-var totalRequest = 0;
-var userNameObserver = null;
 var chart = null;
+var dataLoaded = false;
 
 function init() {
   big5TraitsMap = new Map();
@@ -27,17 +26,24 @@ function init() {
     big5TraitsMap.set(trait, 0);
   }
   totalReceivedResponses = 0;
+
+  userTweets = [];
+  totalReceivedResponses = 0;
+  chart = null;
+  dataLoaded = false;
 }
 
-function setTraits(trait) {
-  if (big5TraitsMap.has(trait)) {
-    big5TraitsMap.set(trait, big5TraitsMap.get(trait) + 1);
-    totalReceivedResponses += 1;
+function setTraits(data) {
+  for (let trait of data) {
+    if (big5TraitsMap.has(trait)) {
+      big5TraitsMap.set(trait, big5TraitsMap.get(trait) + 1);
+      totalReceivedResponses += 1;
+    }
   }
 }
 
-const tweetSender = async (tweetText) => {
-  const body = { text: tweetText };
+const tweetSender = async () => {
+  const body = { texts: userTweets };
 
   const sending = browser.runtime.sendMessage(body);
   sending.then(
@@ -45,10 +51,7 @@ const tweetSender = async (tweetText) => {
       if (response?.success && response?.data) {
         // Data Receviced here
         setTraits(response.data);
-
-        if (totalReceivedResponses > RESPONSE_THRESHOLD) {
-          createTable();
-        }
+        createTable();
       }
     },
     function handleError(e) {
@@ -214,7 +217,7 @@ function searchTweets() {
   // console.log('Searching tweets...');
   const tweets = document.querySelectorAll('[data-testid="tweetText"]');
 
-  if (totalRequest < MAX_REQUESTS) {
+  if (!dataLoaded) {
     for (let tweet of tweets) {
       if (tweet.dataset.is_visited) {
         return;
@@ -224,13 +227,15 @@ function searchTweets() {
       // console.log({ tweetText });
       tweet.dataset.is_visited = true;
 
-      tweetSender(tweetText);
-      totalRequest += 1;
+      userTweets.push(tweetText);
 
-      if (totalRequest >= MAX_REQUESTS) {
+      if (userTweets.length >= REQUEST_THRESHOLD) {
+        dataLoaded = true;
+        tweetSender();
         break;
       }
     }
+    // console.log({ userTweets });
   }
 
   const doc = document.documentElement;
@@ -260,6 +265,36 @@ window.addEventListener('load', () => {
 
   searchTweets();
 });
+
+function resetState() {
+  const userBox = document.getElementById(USER_TRAIT_BOX_ID);
+  if (userBox) {
+    userBox.remove();
+  }
+
+  window.removeEventListener('scroll', searchTweets);
+  init();
+
+  if (URL_REGEX_PATTERN.test(window.location)) {
+    window.addEventListener('scroll', searchTweets);
+  }
+}
+
+// Route change handler
+let url = location.href;
+document.body.addEventListener(
+  'click',
+  () => {
+    requestAnimationFrame(() => {
+      if (url !== location.href) {
+        // console.log('URL changed');
+        url = location.href;
+        resetState();
+      }
+    });
+  },
+  true
+);
 
 function showPopup(data) {
   const box = document.createElement('div');

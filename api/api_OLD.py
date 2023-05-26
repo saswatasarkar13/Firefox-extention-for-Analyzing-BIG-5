@@ -3,14 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 # from predictor import preprocess_and_predict
 import random
-# for test
+
 traits = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness']
-#traits = ['Trait-1', 'Trait-2', 'Trait-3', 'Trait-4', 'Trait-5']
-#
 
 
 class Big(BaseModel):
-    text: str
+    texts: list[str]
 
 
 app = FastAPI()
@@ -29,11 +27,12 @@ async def root(
     body: Big
 ):
     body = body.dict()
-    print(body)
+    # print(body)
     # Use the preprocess_and_predict function from predictor.py
     # result = preprocess_and_predict(body["text"])
-
-    result = traits[random.randint(0, 4)]
+    result = []
+    for i in body["texts"]:
+        result.append(traits[random.randint(0, 4)])
     # result = "Predict"
 
     return {"data": result}

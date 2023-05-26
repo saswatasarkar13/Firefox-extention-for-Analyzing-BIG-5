@@ -9,10 +9,10 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(message)
   };
-
-  new Promise(async (resolve) => {
+  
+  return new Promise(async (resolve) => {
     // Send the selectedText to the API
     const res = await fetch(`${BASE_URL}/api`, options);
     if (!res.ok) {

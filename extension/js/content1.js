@@ -2,7 +2,7 @@ const USER_TRAIT_BOX_ID = 'big5-user-traits-box';
 const USER_TRAIT_TABLE_ID = 'big5-user-traits-table';
 const USER_TRAIT_CHART_ID = 'big5-user-traits-chart';
 const USER_TRAIT_CLOSE_CHART_ID = 'big5-user-traits-chart';
-const TRAITS = ['Trait-1', 'Trait-2', 'Trait-3', 'Trait-4'];
+const TRAITS = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness'];
 const LOGO_LINK = 'https://m.media-amazon.com/images/I/415SYXaLmrL.png';
 const RESPONSE_THRESHOLD = 5;
 

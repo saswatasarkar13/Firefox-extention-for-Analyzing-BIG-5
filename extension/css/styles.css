@@ -97,36 +97,44 @@ header {
   position: relative;
 }
 
-#big5-user-traits-chart > button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
+#big5-user-traits-box small {
+  color: gray;
+}
+
+.big_5_selected_text_analysis_box {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,
+    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,
+    rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  padding: 1rem 2rem;
+  background-color: #f2f2f2;
+  border-radius: 15px;
+}
+
+.big_5_selected_text_analysis_box .title {
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.big_5_selected_text_analysis_box .title > span {
+  flex: 1;
+}
+
+.big_5_selected_text_analysis_box .title > button {
   outline: none;
   border: none;
   padding: 2px;
   background: transparent;
-  display: none;
   cursor: pointer;
   font-weight: bold;
   font-size: medium;
-  z-index: 999;
-}
-
-#big5-user-traits-box small{
+  transform: translate(20px, -10px);
   color: gray;
 }
 
-
-
-
-/* #big5-user-traits-box.float_right #big5-user-traits-chart > button {
-  display: block;
+.big_5_selected_text_analysis_box small {
+  color: gray;
 }
-
-#big5-user-traits-box.float_right #big5-user-traits-chart.hide {
-  display: none;
-}
-
-#big5-user-traits-box.float_right #big5-user-traits-chart:not(.hide) {
-  display: block;
-} */

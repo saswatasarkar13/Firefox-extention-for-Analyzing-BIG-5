@@ -42,13 +42,9 @@ const tweetSender = async (tweetText) => {
   const sending = browser.runtime.sendMessage(body);
   sending.then(
     function handleResponse(response) {
-      // console.log({ response });
-
       if (response?.success && response?.data) {
         // Data Receviced here
         setTraits(response.data);
-
-        // console.log({ big5TraitsMap });
 
         if (totalReceivedResponses > RESPONSE_THRESHOLD) {
           createTable();
@@ -99,8 +95,6 @@ const getSummary = () => {
 const setTableRows = (table) => {
   const summary = getSummary();
   for (let [key, value] of summary) {
-    // console.log(key + ' = ' + value);
-
     const row = document.createElement('tr');
     const td1 = document.createElement('td');
     const td2 = document.createElement('td');
@@ -162,29 +156,18 @@ const createTable = () => {
     content.appendChild(table);
     content.appendChild(chart);
     tableWrapper.appendChild(content);
-    const tnc = document.createElement("small");
-    tnc.setAttribute('id', "tnc");
-    tnc.innerText = `*Analysis based on the last ${totalReceivedResponses} tweets of the user.`
+    const tnc = document.createElement('small');
+    tnc.setAttribute('id', 'tnc');
+    tnc.innerText = `*Analysis based on the last ${totalReceivedResponses} tweets of the user.`;
     tableWrapper.appendChild(tnc);
     userBox.appendChild(tableWrapper);
+  } else {
+    document.getElementById(
+      'tnc'
+    ).innerText = `*Analysis based on the last ${totalReceivedResponses} tweets of the user.`;
   }
-  else {
-    document.getElementById("tnc").innerText = `*Analysis based on the last ${totalReceivedResponses} tweets of the user.`
-  }
-
 
   renderChart();
-
-  // const closeChartBtn = document.createElement('button');
-  // closeChartBtn.setAttribute('id', USER_TRAIT_CLOSE_CHART_ID);
-  // closeChartBtn.innerHTML = '&#10005;';
-  // const chartDiv = document.querySelector('#' + USER_TRAIT_CHART_ID);
-
-  // closeChartBtn.addEventListener('click', () => {
-  //   chartDiv.classList.add('hide');
-  // });
-
-  // chartDiv.appendChild(closeChartBtn);
 };
 
 function renderChart() {
@@ -228,17 +211,14 @@ function renderChart() {
 }
 
 function searchTweets() {
-
   // console.log('Searching tweets...');
   const tweets = document.querySelectorAll('[data-testid="tweetText"]');
-  // console.log({ tweets });
-  //tweets.forEach((tweet) => {
+
   if (totalRequest < MAX_REQUESTS) {
     for (let tweet of tweets) {
       if (tweet.dataset.is_visited) {
         return;
       }
-
 
       const tweetText = tweet.innerText;
       // console.log({ tweetText });
@@ -251,7 +231,6 @@ function searchTweets() {
         break;
       }
     }
-
   }
 
   const doc = document.documentElement;
@@ -266,7 +245,6 @@ function searchTweets() {
   } else {
     wrapper.classList.remove('float_right');
   }
-  // console.log({ top });
 }
 
 window.addEventListener('load', () => {
@@ -281,4 +259,33 @@ window.addEventListener('load', () => {
   init();
 
   searchTweets();
+});
+
+function showPopup(data) {
+  const box = document.createElement('div');
+  box.setAttribute('class', 'big_5_selected_text_analysis_box');
+
+  const color = COLORS[TRAITS.indexOf(data)];
+
+  box.innerHTML = `
+    <h3 class="title">
+      <span>Big-5 analysis on the selected text.</span>
+    </h3>
+    <h2 class="prediction" style="color: ${color};">${data}</h2>
+    <small>*Analysis based on the selected text.</small>
+  `;
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '&#10005;';
+  closeBtn.addEventListener('click', () => {
+    box.remove();
+  });
+  box.querySelector('h3').appendChild(closeBtn);
+
+  document.querySelector('body').appendChild(box);
+}
+
+browser.runtime.onMessage.addListener((message) => {
+  if (message?.type === 'selected-text-popup') {
+    showPopup(message.data);
+  }
 });

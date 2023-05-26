@@ -1,129 +1,261 @@
-/**
- * Send tweet text to a "job lib" file and show "incon.png" under every tweet.
- *
- * @param  {String} text The text to send to the "job lib" file.
- * @param  {Element} tweetElement The tweet element.
- */
-const sendToJobLib = (text, tweetElement) => {
-  // Send the tweet text to the "job lib" file
-  // Replace the code below with your implementation of sending the text to the "job lib" file
-  // jobLib.send(text);
+const USER_TRAIT_BOX_ID = 'big5-user-traits-box';
+const USER_TRAIT_TABLE_ID = 'big5-user-traits-table';
+const USER_TRAIT_CHART_ID = 'big5-user-traits-chart';
+const USER_TRAIT_CLOSE_CHART_ID = 'big5-user-traits-chart';
+const TRAITS = [
+  'Agreeableness',
+  'Conscientiousness',
+  'Extraversion',
+  'Neuroticism',
+  'Openness'
+];
+const LOGO_LINK = 'assets/icon.png';
+const RESPONSE_THRESHOLD = 5;
+const URL_REGEX_PATTERN = /^https:\/\/twitter\.com\/[^\/\?]+$/;
 
-  // Show "incon.png" under the tweet
-  const img = document.createElement('img');
-  img.src = 'icon.png';
-  tweetElement.appendChild(img);
-};
+var big5TraitsMap = new Map();
+var totalReceivedResponses = 0;
+var userNameObserver = null;
+var chart = null;
 
-/**
- * Get the closest matching element up the DOM tree.
- *
- * @param  {Element} elem     Starting element
- * @param  {String}  selector Selector to match against
- * @return {Boolean|Element}  Returns null if no match found
- */
-const getClosest = (elem, selector) => {
-  if (!Element.prototype.matches) {
-    Element.prototype.matches =
-      Element.prototype.matchesSelector ||
-      Element.prototype.mozMatchesSelector ||
-      Element.prototype.msMatchesSelector ||
-      Element.prototype.oMatchesSelector ||
-      Element.prototype.webkitMatchesSelector ||
-      function (s) {
-        var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-          i = matches.length;
-        while (--i >= 0 && matches.item(i) !== this) {}
-        return i > -1;
-      };
+function init() {
+  big5TraitsMap = new Map();
+  for (let trait of TRAITS) {
+    big5TraitsMap.set(trait, 0);
   }
+  totalReceivedResponses = 0;
+}
 
-  for (; elem && elem !== document; elem = elem.parentNode) {
-    if (elem.matches(selector)) return elem;
+function setTraits(trait) {
+  if (big5TraitsMap.has(trait)) {
+    big5TraitsMap.set(trait, big5TraitsMap.get(trait) + 1);
+    totalReceivedResponses += 1;
   }
+}
 
-  return null;
-};
+const tweetSender = async (tweetText) => {
+  const body = { text: tweetText };
 
-/**
- * Manage multiple tweet statuses and append the functionality.
- */
-const tweetArticles = () => {
-  /**
-   * Event listener callback.
-   *
-   * @param  {Object} e Event object
-   * @return {NULL} Returns null
-   */
-  const listener = (e) => {
-    let targetElement = e.target;
+  const sending = browser.runtime.sendMessage(body);
+  sending.then(
+    function handleResponse(response) {
+      // console.log({ response });
 
-    switch (e.type) {
-      case 'click':
-        // Don't click the tweet
-        e.stopPropagation();
+      if (response?.success && response?.data) {
+        // Data Receviced here
+        setTraits(response.data);
 
-        // In case a button child element is clicked
-        if (e.target !== e.currentTarget) {
-          targetElement = e.currentTarget;
+        // console.log({ big5TraitsMap });
+
+        if (totalReceivedResponses > RESPONSE_THRESHOLD) {
+          createTable();
         }
+      }
+    },
+    function handleError(e) {
+      console.log(e);
+    }
+  );
+};
 
-        const siblings = Array.from(targetElement.parentNode.children);
+const tableExists = () => {
+  // check if the user personality traits table exists in the DOM
+  const box = document.getElementById(USER_TRAIT_TABLE_ID);
+  if (box) {
+    return true;
+  }
+  return false;
+};
 
-        let outputContent = '';
-        let authorHandle = '';
+const setTableHeader = (table) => {
+  const th1 = document.createElement('th');
+  th1.innerText = 'Trait';
 
-        siblings.forEach((sibling) => {
-          if (sibling.tagName === 'SPAN') {
-            outputContent += sibling.innerText;
-          } else if (
-            sibling.tagName === 'A' &&
-            sibling.getAttribute('data-testid') === 'tweetAuthorScreenName'
-          ) {
-            authorHandle = sibling.innerText;
-          }
-        });
+  const th2 = document.createElement('th');
+  th2.innerText = 'Percentage';
 
-        outputContent += ` — ${authorHandle}`;
+  const thead = document.createElement('tr');
+  thead.appendChild(th1);
+  thead.appendChild(th2);
 
-        sendToJobLib(outputContent, getClosest(targetElement, 'article'));
+  table.appendChild(thead);
+};
 
-        break;
+const getSummary = () => {
+  const summary = new Map();
+  for (let [key, value] of big5TraitsMap) {
+    if (big5TraitsMap.has(key)) {
+      const percent = (value / totalReceivedResponses) * 100;
+      summary.set(key, percent.toFixed(2));
+    }
+  }
+
+  return summary;
+};
+
+const setTableRows = (table) => {
+  const summary = getSummary();
+  for (let [key, value] of summary) {
+    // console.log(key + ' = ' + value);
+
+    const row = document.createElement('tr');
+    const td1 = document.createElement('td');
+    const td2 = document.createElement('td');
+
+    td1.innerText = key;
+    td2.innerText = `${value}%`;
+
+    row.appendChild(td1);
+    row.appendChild(td2);
+
+    table.appendChild(row);
+  }
+};
+
+const createTable = () => {
+  const userBox = document.querySelector('[data-testid="UserName"');
+
+  if (!userBox) {
+    return;
+  }
+
+  const tableWrapper = document.createElement('div');
+  tableWrapper.setAttribute('id', USER_TRAIT_BOX_ID);
+
+  const header = document.createElement('div');
+  header.classList.add('big_5_header');
+
+  const logo = document.createElement('img');
+  logo.setAttribute('src', browser.extension.getURL(LOGO_LINK));
+  logo.setAttribute('alt', 'Big-5');
+  header.appendChild(logo);
+
+  const title = document.createElement('h4');
+  title.innerText = 'BIG-5 Personality Traits';
+
+  header.appendChild(title);
+  tableWrapper.appendChild(header);
+
+  let table = null;
+
+  const exists = tableExists();
+  if (exists) {
+    table = document.getElementById(USER_TRAIT_TABLE_ID);
+    table.innerHTML = '';
+  } else {
+    table = document.createElement('table');
+    table.setAttribute('id', USER_TRAIT_TABLE_ID);
+  }
+
+  setTableHeader(table);
+  setTableRows(table);
+
+  if (!exists) {
+    const chart = document.createElement('div');
+    chart.setAttribute('id', USER_TRAIT_CHART_ID);
+
+    const content = document.createElement('div');
+
+    content.appendChild(table);
+    content.appendChild(chart);
+    tableWrapper.appendChild(content);
+    userBox.appendChild(tableWrapper);
+  }
+
+  renderChart();
+
+  // const closeChartBtn = document.createElement('button');
+  // closeChartBtn.setAttribute('id', USER_TRAIT_CLOSE_CHART_ID);
+  // closeChartBtn.innerHTML = '&#10005;';
+  // const chartDiv = document.querySelector('#' + USER_TRAIT_CHART_ID);
+
+  // closeChartBtn.addEventListener('click', () => {
+  //   chartDiv.classList.add('hide');
+  // });
+
+  // chartDiv.appendChild(closeChartBtn);
+};
+
+function renderChart() {
+  const values = [];
+  const labels = [];
+
+  for (let [key, value] of big5TraitsMap) {
+    labels.push(key);
+    values.push(value);
+  }
+
+  const options = {
+    chart: {
+      type: 'bar',
+      toolbar: {
+        show: false
+      }
+    },
+    series: values,
+    labels: labels,
+    legend: {
+      show: false
     }
   };
 
-  /**
-   * Build the functionality button.
-   *
-   * @return {Element} Returns the button element.
-   */
-  const functionalityBtn = () => {
-    const el = document.createElement('button');
+  const ele = document.querySelector(
+    `#${USER_TRAIT_CHART_ID} .apexcharts-canvas`
+  );
 
-    el.classList.add('functionality-button');
-    el.innerHTML = 'Send to Job Lib';
+  if (ele) {
+    chart.updateSeries(values);
+  } else {
+    chart = new ApexCharts(
+      document.querySelector('#' + USER_TRAIT_CHART_ID),
+      options
+    );
 
-    el.addEventListener('click', listener);
+    chart.render();
+  }
+}
 
-    return el;
-  };
+function searchTweets() {
+  // console.log('Searching tweets...');
+  const tweets = document.querySelectorAll('[data-testid="tweetText"]');
+  // console.log({ tweets });
+  tweets.forEach((tweet) => {
+    if (tweet.dataset.is_visited) {
+      return;
+    }
 
-  /**
-   * Append the functionality button.
-   *
-   * @param  {Element} tweetElement The tweet element.
-   */
-  const appendFunctionalityBtn = (tweetElement) => {
-    // Create the functionality button
-    const functionalityBtn = document.createElement('button');
-    functionalityBtn.textContent = 'Functionality Button';
-    functionalityBtn.addEventListener('click', () => {
-      // Add your functionality code here
-      // This code will be executed when the button is clicked
-      console.log('Functionality button clicked!');
-    });
+    const tweetText = tweet.innerText;
+    // console.log({ tweetText });
+    tweet.dataset.is_visited = true;
 
-    // Append the functionality button to the tweet element
-    tweetElement.appendChild(functionalityBtn);
-  };
-};
+    tweetSender(tweetText);
+  });
+
+  const doc = document.documentElement;
+  const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+
+  const wrapper = document.getElementById(USER_TRAIT_BOX_ID);
+
+  if (!wrapper) return;
+
+  if (top > 500) {
+    wrapper.classList.add('float_right');
+  } else {
+    wrapper.classList.remove('float_right');
+  }
+  // console.log({ top });
+}
+
+window.addEventListener('load', () => {
+  console.log("Hello I'm loaded!!!");
+
+  if(!URL_REGEX_PATTERN.test(window.location)) return;
+
+  // Entry point
+  window.addEventListener('scroll', searchTweets);
+
+  // initialization
+  init();
+
+  searchTweets();
+});

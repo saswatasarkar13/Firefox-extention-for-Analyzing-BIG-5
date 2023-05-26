@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "BIG 5",
   "version": "1.0.0",
-  "description": "Copy tweet text by clicking a button. Simple.",
+  "description": "Get Peronality Test. Simple.",
   "icons": {
     "48": "assets/icon.png",
     "96": "assets/icon.png"
@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["https://twitter.com/*"],
-      "js": ["lib/apex-charts/apexcharts.min.js", "js/content1.js"],
+      "js": ["lib/apex-charts/apexcharts.min.js", "js/content.js"],
       "css": ["css/styles.css"],
       "run_at": "document_end"
     }

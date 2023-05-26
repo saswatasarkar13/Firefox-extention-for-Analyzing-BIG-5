@@ -3,7 +3,7 @@ const USER_TRAIT_TABLE_ID = 'big5-user-traits-table';
 const USER_TRAIT_CHART_ID = 'big5-user-traits-chart';
 const USER_TRAIT_CLOSE_CHART_ID = 'big5-user-traits-chart';
 const TRAITS = ['Trait-1', 'Trait-2', 'Trait-3', 'Trait-4'];
-const LOGO_LINK = 'https://m.media-amazon.com/images/I/415SYXaLmrL.png';
+const LOGO_LINK = 'assets/icon.png';
 const RESPONSE_THRESHOLD = 5;
 
 var big5TraitsMap = new Map();
@@ -119,7 +119,7 @@ const createTable = () => {
   header.classList.add('big_5_header');
 
   const logo = document.createElement('img');
-  logo.setAttribute('src', LOGO_LINK);
+  logo.setAttribute('src', browser.extension.getURL(LOGO_LINK));
   logo.setAttribute('alt', 'Big-5');
   header.appendChild(logo);
 

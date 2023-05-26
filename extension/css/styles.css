@@ -1,0 +1,97 @@
+/* Override */
+header {
+  z-index: 0 !important;
+}
+/*  */
+
+#big5-user-traits-box {
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  box-shadow: rgba(200, 200, 193, 0.25) 0px 6px 12px -2px,
+    rgba(244, 244, 244, 0.3) 0px 3px 7px -3px;
+  width: fit-content;
+  z-index: 99;
+}
+
+#big5-user-traits-box.float_right {
+  position: fixed;
+  left: 10px;
+  bottom: 80px;
+}
+
+#big5-user-traits-box > div {
+  display: flex;
+}
+
+#big5-user-traits-box.float_right > div:nth-child(2) {
+  flex-direction: column;
+}
+
+.big_5_header {
+  display: flex;
+  flex-direction: row;
+  margin: 0 0 10px 0;
+  align-items: center;
+}
+
+.big_5_header img {
+  width: 25px;
+  height: 25px;
+}
+
+.big_5_header h4 {
+  margin: 0;
+  flex: 1;
+  padding-left: 0.5rem;
+  font-weight: bold;
+}
+
+#big5-user-traits-table,
+#big5-user-traits-table th,
+#big5-user-traits-table tr,
+#big5-user-traits-table td {
+  border: 1px solid green;
+  border-collapse: collapse;
+}
+
+#big5-user-traits-table th {
+  padding: 0.5rem 2rem;
+  font-weight: bold;
+}
+
+#big5-user-traits-table td {
+  padding: 0.5rem 2rem;
+}
+
+#big5-user-traits-chart {
+  position: relative;
+}
+
+#big5-user-traits-chart > button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  outline: none;
+  border: none;
+  padding: 2px;
+  background: transparent;
+  display: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: medium;
+  z-index: 999;
+}
+
+/* #big5-user-traits-box.float_right #big5-user-traits-chart > button {
+  display: block;
+}
+
+#big5-user-traits-box.float_right #big5-user-traits-chart.hide {
+  display: none;
+}
+
+#big5-user-traits-box.float_right #big5-user-traits-chart:not(.hide) {
+  display: block;
+} */

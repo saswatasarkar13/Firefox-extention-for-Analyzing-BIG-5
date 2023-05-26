@@ -15,7 +15,8 @@
   "content_scripts": [
     {
       "matches": ["https://twitter.com/*"],
-      "js": ["js/content1.js"],
+      "js": ["lib/apex-charts/apexcharts.min.js", "js/content1.js"],
+      "css": ["css/styles.css"],
       "run_at": "document_end"
     }
   ],

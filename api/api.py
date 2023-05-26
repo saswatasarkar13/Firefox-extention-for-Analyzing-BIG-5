@@ -1,30 +1,38 @@
-import os
 from fastapi import FastAPI, Form
-from predictor import preprocess_and_predict
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+# from predictor import preprocess_and_predict
+import random
+
+traits = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness']
+
+
+class Big(BaseModel):
+    texts: list[str]
+
 
 app = FastAPI()
 
-def run_python_script():
-    anaconda_path = "/opt/anaconda"  # Replace with the actual path to your Anaconda installation
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    # Step 1: Activate the Anaconda environment
-    activate_path = os.path.join(anaconda_path, "bin", "activate")
-    os.system(f"source {activate_path}")
-
-    # Step 2: Activate the base environment
-    os.system("conda activate base")
-
-    # Step 3: Run the FastAPI server
-    app.run(host="0.0.0.0", port=8000)
 
 @app.post("/api")
 async def root(
-    text: str = Form(...)
+    body: Big
 ):
+    body = body.dict()
+    # print(body)
     # Use the preprocess_and_predict function from predictor.py
-    result = preprocess_and_predict(text)
+    # result = preprocess_and_predict(body["text"])
+    result = []
+    for i in body["texts"]:
+        result.append(traits[random.randint(0, 4)])
+    # result = "Predict"
 
     return {"data": result}
-
-if __name__ == "__main__":
-    run_python_script()

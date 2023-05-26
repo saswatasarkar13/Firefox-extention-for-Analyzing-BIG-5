@@ -2,7 +2,7 @@ const BASE_URL = 'http://127.0.0.1:8000';
 
 // Listener for messages from content script
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  console.log({ message, sender, sendResponse });
+  // console.log({ message, sender, sendResponse });
 
   const options = {
     method: 'POST',

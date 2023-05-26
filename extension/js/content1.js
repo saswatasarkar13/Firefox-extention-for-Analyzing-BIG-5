@@ -2,9 +2,16 @@ const USER_TRAIT_BOX_ID = 'big5-user-traits-box';
 const USER_TRAIT_TABLE_ID = 'big5-user-traits-table';
 const USER_TRAIT_CHART_ID = 'big5-user-traits-chart';
 const USER_TRAIT_CLOSE_CHART_ID = 'big5-user-traits-chart';
-const TRAITS = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness'];
+const TRAITS = [
+  'Agreeableness',
+  'Conscientiousness',
+  'Extraversion',
+  'Neuroticism',
+  'Openness'
+];
 const LOGO_LINK = 'assets/icon.png';
 const RESPONSE_THRESHOLD = 5;
+const URL_REGEX_PATTERN = /^https:\/\/twitter\.com\/[^\/\?]+$/;
 
 var big5TraitsMap = new Map();
 var totalReceivedResponses = 0;
@@ -239,11 +246,13 @@ function searchTweets() {
   // console.log({ top });
 }
 
-// Entry point
-window.addEventListener('scroll', searchTweets);
-
 window.addEventListener('load', () => {
   console.log("Hello I'm loaded!!!");
+
+  if(!URL_REGEX_PATTERN.test(window.location)) return;
+
+  // Entry point
+  window.addEventListener('scroll', searchTweets);
 
   // initialization
   init();

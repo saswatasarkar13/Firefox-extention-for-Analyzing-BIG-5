@@ -187,7 +187,7 @@ function renderChart() {
 
   const options = {
     chart: {
-      type: 'bar',
+      type: 'pie',
       toolbar: {
         show: false
       }
@@ -196,7 +196,9 @@ function renderChart() {
     labels: labels,
     legend: {
       show: false
-    }
+    },
+    colors: ['#f8d359', '#f78a86','#edddc2','#71cae5','#31dcb2']
+
   };
 
   const ele = document.querySelector(

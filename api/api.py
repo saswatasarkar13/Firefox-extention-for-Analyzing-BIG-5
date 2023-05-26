@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-# from predictor import preprocess_and_predict
+from predictor import preprocess_and_predict
 import random
 
 traits = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness']
@@ -21,7 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.post("/api")
 async def root(
     body: Big
@@ -29,8 +28,9 @@ async def root(
     body = body.dict()
     # print(body)
     # Use the preprocess_and_predict function from predictor.py
-    # result = preprocess_and_predict(body["text"])
-    result = []
+    result = preprocess_and_predict(body["texts"][0])
+    print(result)
+    # result = []
     for i in body["texts"]:
         result.append(traits[random.randint(0, 4)])
     # result = "Predict"

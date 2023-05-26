@@ -12,6 +12,9 @@ const tweetSender = async (tweetText) => {
 
       if (response?.success && response?.data) {
         const key = response.data;
+
+          // Data Receviced here
+
         if (big5TraitsMap.has(key)) {
           big5TraitsMap.set(key, big5TraitsMap.get(key) + 1);
         } else {
@@ -56,6 +59,13 @@ const setTableHeader = (table) => {
 const setTableRows = (table) => {
   for (let [key, value] of big5TraitsMap) {
     console.log(key + ' = ' + value);
+
+  // calculation here map to percentage
+
+
+
+
+
     const row = document.createElement('tr');
     const td1 = document.createElement('td');
     const td2 = document.createElement('td');
@@ -80,7 +90,7 @@ const createTable = () => {
   if (tableExists()) {
     table = document.getElementById(USER_TRAIT_BOX_ID);
   }
-
+  table.innerHTML = "";
   setTableHeader(table);
   setTableRows(table);
 

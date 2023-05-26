@@ -28,11 +28,11 @@ async def root(
     body = body.dict()
     # print(body)
     # Use the preprocess_and_predict function from predictor.py
-    result = preprocess_and_predict(body["texts"][0])
-    print(result)
-    # result = []
+    # result = preprocess_and_predict(body["texts"][0])
+    # print(result)
+    result = []
     for i in body["texts"]:
-        result.append(traits[random.randint(0, 4)])
+        result.append(preprocess_and_predict(i))
     # result = "Predict"
 
     return {"data": result}

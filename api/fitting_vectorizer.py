@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import VotingClassifier
 import joblib
 
-def fitting_vectorizer(input_text):
+def fitting_vectorizer():
     df1 = pd.read_excel('bng2eng2/train/ConscientiousnessTrain.xlsx')
     df2 = pd.read_excel('bng2eng2/train/AgreeablenessTrain.xlsx')
     df3 = pd.read_excel('bng2eng2/train/NeuroticismTrain.xlsx')
@@ -23,8 +23,11 @@ def fitting_vectorizer(input_text):
     train_df['status_text'] = train_df['status_text'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
     train_df['status_text'] = train_df['status_text'].apply(lambda x: word_tokenize(x))
     train_df['status_text'] = train_df['status_text'].apply(lambda x: [stemmer.stem(word) for word in x])
+    train_df['status_text'] = train_df['status_text'].apply(lambda x: ' '.join(x))
     # Extract features from the preprocessed text input
     tfidf_vectorizer = TfidfVectorizer()
+    # print(train_df)
     X_train_tfidf = tfidf_vectorizer.fit_transform(train_df['status_text'])
     print("Vector fitting Done!!")
-    return X_train_tfidf
+    # print(type(X_train_tfidf))
+    return tfidf_vectorizer, X_train_tfidf, train_df

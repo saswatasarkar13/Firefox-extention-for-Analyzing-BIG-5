@@ -235,7 +235,7 @@ function searchTweets() {
         break;
       }
     }
-    // console.log({ userTweets });
+    console.log({ userTweets });
   }
 
   const doc = document.documentElement;

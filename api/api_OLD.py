@@ -4,7 +4,8 @@ from pydantic import BaseModel
 # from predictor import preprocess_and_predict
 import random
 # for test
-traits = ['Trait-1', 'Trait-2', 'Trait-3', 'Trait-4', 'Trait-5']
+traits = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness']
+#traits = ['Trait-1', 'Trait-2', 'Trait-3', 'Trait-4', 'Trait-5']
 #
 
 

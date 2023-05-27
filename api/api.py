@@ -2,9 +2,6 @@ from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from predictor import preprocess_and_predict
-import random
-
-traits = ['Agreeableness', 'Conscientiousness', 'Extraversion', 'Neuroticism', 'Openness']
 
 
 class Big(BaseModel):

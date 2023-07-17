@@ -11,7 +11,7 @@ const TRAITS = [
 ];
 const LOGO_LINK = 'assets/icon.png';
 const RESPONSE_THRESHOLD = 2;
-const MAX_REQUESTS = 10;
+const MAX_REQUESTS = 20;
 const URL_REGEX_PATTERN = /^https:\/\/twitter\.com\/[^\/\?]+$/;
 const COLORS = ['#f8d359', '#f78a86', '#edddc2', '#71cae5', '#31dcb2'];
 

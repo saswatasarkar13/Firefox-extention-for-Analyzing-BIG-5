@@ -3,5 +3,4 @@
 It is incomplete...
 
 ### Something
-
-/opt/anaconda/bin/activate -h  
+Please check setup.md first.  
